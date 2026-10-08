@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PulseTransit AI - Smart Commute Engine</title>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="navbar">
+        <div class="brand">
+            <div class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+            </div>
+            <div class="brand-title">
+                <h1>PulseTransit <span class="badge">AI</span></h1>
+                <p>Smart Commute Engine & Navigation</p>
+            </div>
+        </div>
+
+        <div class="nav-controls">
+            <div class="sim-speed">
+                <span>SIM SPEED</span>
+                <button class="btn-speed active" data-speed="1">1x</button>
+                <button class="btn-speed" data-speed="2">2x</button>
+                <button class="btn-speed" data-speed="5">5x</button>
+            </div>
+            <button class="btn btn-warning" id="btn-simulate-delay">⚠️ Simulate Delay</button>
+            <button class="btn btn-primary" id="btn-digital-pass">🎫 Digital Pass</button>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="app-container">
+
+        <!-- Sidebar Navigation & Planner -->
+        <aside class="sidebar">
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="plan">📍 Plan Trip</button>
+                <button class="tab-btn" data-tab="lines">📡 Live Lines</button>
+                <button class="tab-btn" data-tab="analytics">📊 Analytics</button>
+            </div>
+
+            <div class="tab-content" id="tab-plan">
+                <div class="planner-card">
+                    <div class="input-group">
+                        <span class="icon origin-icon"></span>
+                        <input type="text" id="origin-input" placeholder="Choose origin station...">
+                    </div>
+                    <div class="route-line"></div>
+                    <div class="input-group">
+                        <span class="icon dest-icon"></span>
+                        <input type="text" id="dest-input" placeholder="Choose destination...">
+                    </div>
+
+                    <div class="optimize-selector">
+                        <label>Optimize by:</label>
+                        <div class="chip-group">
+                            <button class="chip active">Fastest</button>
+                            <button class="chip">Cheapest</button>
+                            <button class="chip">Eco-Friendly</button>
+                            <button class="chip">Fewest Transfers</button>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-action" id="btn-find-routes">🔍 Find Smart Routes</button>
+                </div>
+
+                <div class="results-container" id="results-container">
+                    <div class="empty-state">
+                        <div class="map-icon">🗺️</div>
+                        <p>Select origin and destination to compute live multimodal routes.</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Map Container -->
+        <section class="map-wrapper">
+            <div id="map"></div>
+
+            <!-- Floating Layer Controls -->
+            <div class="map-layers-panel">
+                <h4>MAP LAYERS</h4>
+                <label class="toggle-row">
+                    <span>👥 Crowd Heatmap</span>
+                    <input type="checkbox" id="toggle-heatmap" checked>
+                    <span class="slider"></span>
+                </label>
+                <label class="toggle-row">
+                    <span>🛣️ Live Traffic</span>
+                    <input type="checkbox" id="toggle-traffic" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- App Scripts -->
+    <script src="js/data.js"></script>
+    <script src="js/navigation.js"></script>
+    <script src="js/main.js"></script>
+
+</body>
+</html>
