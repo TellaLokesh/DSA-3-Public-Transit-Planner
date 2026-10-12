@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PulseTransit AI - Smart Commute Engine</title>
+    <meta name="description" content="PulseTransit AI Smart Commute Engine & Multimodal Navigation System">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="navbar">
+        <div class="brand">
+            <div class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+            </div>
+            <div class="brand-title">
+                <h1>PulseTransit <span class="badge">AI</span></h1>
+                <p>Smart Commute Engine & Navigation</p>
+            </div>
+        </div>
+
+        <div class="nav-controls">
+            <div class="sim-speed">
+                <span>SIM SPEED</span>
+                <button class="btn-speed active" data-speed="1">1x</button>
+                <button class="btn-speed" data-speed="2">2x</button>
+                <button class="btn-speed" data-speed="5">5x</button>
+            </div>
+            <button class="btn btn-warning" id="btn-simulate-delay">⚠️ Simulate Delay</button>
+            <button class="btn btn-primary" id="btn-digital-pass">🎫 Digital Pass</button>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="app-container">
+
+        <!-- Sidebar Navigation & Planner -->
+        <aside class="sidebar">
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="plan">📍 Plan Trip</button>
+                <button class="tab-btn" data-tab="lines">📡 Live Lines</button>
+                <button class="tab-btn" data-tab="analytics">📊 Analytics</button>
+            </div>
+
+            <div class="tab-content" id="tab-plan">
+                <div class="planner-card">
+                    <div class="input-group">
+                        <span class="icon origin-icon"></span>
+                        <input type="text" id="origin-input" placeholder="Choose origin station or city...">
+                    </div>
+                    <div class="route-line"></div>
+                    <div class="input-group">
+                        <span class="icon dest-icon"></span>
+                        <input type="text" id="dest-input" placeholder="Choose destination station or city...">
+                    </div>
+
+                    <!-- Quick Station Selector Chips -->
+                    <div class="quick-stations">
+                        <span class="quick-title">Quick Stations:</span>
+                        <button class="station-chip" data-station="Central Metro Terminal">Central Metro</button>
+                        <button class="station-chip" data-station="Financial Center Hub">Financial Hub</button>
+                        <button class="station-chip" data-station="Tech District Park">Tech Park</button>
+                        <button class="station-chip" data-station="Harbor Promenade">Harbor</button>
+                    </div>
+
+                    <div class="optimize-selector">
+                        <label>Optimize by:</label>
+                        <div class="chip-group">
+                            <button class="chip active">Fastest</button>
+                            <button class="chip">Cheapest</button>
+                            <button class="chip">Eco-Friendly</button>
+                            <button class="chip">Fewest Transfers</button>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-action" id="btn-find-routes">🔍 Find Smart Bus Routes</button>
+                </div>
+
+                <div class="results-container" id="results-container">
+                    <div class="empty-state">
+                        <div class="map-icon">🗺️</div>
+                        <p>Select origin and destination to compute live multimodal routes.</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Map Container -->
+        <section class="map-wrapper">
+            <div id="map"></div>
+
+            <!-- Floating Layer Controls -->
+            <div class="map-layers-panel">
+                <h4>MAP LAYERS</h4>
+                <label class="toggle-row">
+                    <span>👥 Crowd Heatmap</span>
+                    <input type="checkbox" id="toggle-heatmap" checked>
+                    <span class="slider"></span>
+                </label>
+                <label class="toggle-row">
+                    <span>🛣️ Live Traffic</span>
+                    <input type="checkbox" id="toggle-traffic" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Digital Pass & Ticket History Modal -->
+    <div class="modal-overlay" id="ticket-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>🎫 Digital Transit Pass & Active Tickets</h3>
+                <button class="modal-close-btn" id="close-ticket-modal">&times;</button>
+            </div>
+
+            <section class="pass-plans-section" aria-labelledby="pass-plans-title">
+                <div class="modal-section-title">
+                    <h4 id="pass-plans-title">Choose a Pass Plan</h4>
+                    <p>Demo purchase only — no payment will be processed.</p>
+                </div>
+                <div class="pass-plans-list" id="pass-plans">
+                    <article class="pass-plan-card">
+                        <div class="pass-plan-info">
+                            <h5>Day Pass</h5>
+                            <p>Unlimited rides for one day</p>
+                        </div>
+                        <strong class="pass-plan-price">₹250</strong>
+                        <button class="btn-buy-pass" data-plan-id="day">Buy Day</button>
+                    </article>
+                    <article class="pass-plan-card">
+                        <div class="pass-plan-info">
+                            <h5>Weekly Pass</h5>
+                            <p>Unlimited rides for seven days</p>
+                        </div>
+                        <strong class="pass-plan-price">₹1,200</strong>
+                        <button class="btn-buy-pass" data-plan-id="week">Buy Week</button>
+                    </article>
+                    <article class="pass-plan-card">
+                        <div class="pass-plan-info">
+                            <h5>Monthly Pass</h5>
+                            <p>Unlimited rides for thirty days</p>
+                        </div>
+                        <strong class="pass-plan-price">₹3,500</strong>
+                        <button class="btn-buy-pass" data-plan-id="month">Buy Month</button>
+                    </article>
+                </div>
+            </section>
+
+            <div class="digital-pass-card">
+                <div class="pass-top">
+                    <div>
+                        <span class="pass-user-role" id="active-pass-name">NO ACTIVE PLAN</span>
+                        <h4 class="pass-user-name">Lokesh</h4>
+                        <div class="pass-id-tag">Pass ID: <strong id="digital-pass-id">Not purchased</strong></div>
+                    </div>
+                    <div class="qr-code-graphic" id="pass-qr-code" aria-label="Pass QR code">
+                        <span class="qr-placeholder">Buy a pass to generate its QR code</span>
+                    </div>
+                </div>
+                <div class="pass-footer">
+                    <div>Status: <span id="digital-pass-badge">No active pass</span></div>
+                    <div>Expires in: <strong id="pass-timer-display" style="color: #06b6d4;">--:--</strong></div>
+                </div>
+            </div>
+
+            <div class="modal-section-title">
+                <h4>Active Bookings & Tickets</h4>
+            </div>
+
+            <div class="ride-history-list" id="ride-history-list">
+                <!-- Dynamically Populated by BookingsListModule -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="/vendor/qrcodejs/qrcode.min.js"></script>
+    <!-- App Scripts (Loaded in explicit dependency order) -->
+    <script src="js/state.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/booking.js"></script>
+    <script src="js/bookings.js"></script>
+    <script src="js/navigation.js"></script>
+    <script src="js/events.js"></script>
+    <script src="js/main.js"></script>
+
+</body>
+</html>
